@@ -686,7 +686,7 @@ let st={lang:"en",names:["",""],week:wk,done:{}};
 try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s){st=Object.assign(st,s);if(st.week!==wk){st.week=wk;st.done={}}}}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
 /* ===== GOOGLE SHEETS SYNC — paste your Apps Script Web App URL between the quotes ===== */
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbxoKJH9PLz5omu4X_ZASvXCWRpHjsPPeootLOgEK4FZOJJnFMko4K-gj6Iz6mCUDZg/exec";
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbxa1c8r0JrnSfJnVT_KQK7i5Y-vyvXY6jPr7ImfaJfnM9m_ksln2-dxbcO_TihwDujm/exec";
 /* ========================================================================================= */
 let DB=null, SHEET=false, readOnly=false, wq=Promise.resolve(), pending=0;
 const queue=f=>{wq=wq.then(f).catch(e=>{if(e&&e.code==="invalid_argument"){readOnly=true;renderSync();toast(X().roMsg)}else if(e&&e.code==="quota_exceeded"){toast(e.message||"Storage full")}});return wq};
