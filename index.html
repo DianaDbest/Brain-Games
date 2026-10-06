@@ -1,4 +1,5 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style></head><body><title>Brain Games Week</title>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Brain Games Week</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap">
@@ -11,6 +12,7 @@
   --today:#3550D4; --magic:#D9468A; --magic-soft:#FFE5F0;
   --night-1:#2D2870; --night-2:#5843B8; --on-dark:#FFFFFF;
   --skin:#FFD9B8; --hair:#6B3E26; --red:#E4483B; --amber:#F4B30F; --green:#2DB45E; --tl:#2A3550; --sun:#F6B72A; --star-empty:#E3E6EF;
+  --rt-morning:#FFF3D1; --rt-after:#E3F0FF; --rt-bed:#ECE6FF;
   --t-mad:#FFE0DF; --t-sad:#DCEEFF; --t-nervous:#EEE2FF; --t-tired:#FFF1CB; --t-happy:#DAF7E4; --t-turtle:#E8FAF3; --t-lemon:#FFF7DE; --t-senses:#EAF4FF; --t-corner:#F6F1FF;
   --shadow:0 1px 2px rgba(31,43,92,.06),0 8px 24px rgba(31,43,92,.07);
   --f-display:"Fredoka","Nunito",ui-rounded,system-ui,sans-serif;
@@ -22,6 +24,7 @@
   --kid1:#F27AA3; --kid1-soft:#43222F; --kid2:#6E9CF3; --kid2-soft:#1F2D4D;
   --today:#5C74F0; --magic:#F072AA; --magic-soft:#3D2033;
   --skin:#F2C9A5; --tl:#0A0E17; --sun:#F6C239; --star-empty:#3A4468;
+  --rt-morning:#3A321C; --rt-after:#1E2F48; --rt-bed:#2C2650;
   --t-mad:#432A2E; --t-sad:#22344F; --t-nervous:#33294F; --t-tired:#41381F; --t-happy:#1F3B2E; --t-turtle:#1D3A35; --t-lemon:#3D3820; --t-senses:#1F3150; --t-corner:#2C2648;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark}}
 :root[data-theme="dark"]{
@@ -30,6 +33,7 @@
   --kid1:#F27AA3; --kid1-soft:#43222F; --kid2:#6E9CF3; --kid2-soft:#1F2D4D;
   --today:#5C74F0; --magic:#F072AA; --magic-soft:#3D2033;
   --skin:#F2C9A5; --tl:#0A0E17; --sun:#F6C239; --star-empty:#3A4468;
+  --rt-morning:#3A321C; --rt-after:#1E2F48; --rt-bed:#2C2650;
   --t-mad:#432A2E; --t-sad:#22344F; --t-nervous:#33294F; --t-tired:#41381F; --t-happy:#1F3B2E; --t-turtle:#1D3A35; --t-lemon:#3D3820; --t-senses:#1F3150; --t-corner:#2C2648;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark}
 
@@ -58,7 +62,7 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--today);outline-
 /* Kid scoreboards */
 .kids{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 @media (max-width:640px){.kids{grid-template-columns:1fr}}
-.kid{border-radius:22px;padding:14px 18px 14px 14px;display:flex;align-items:center;gap:14px;min-width:0;border:2px solid transparent}
+.kid{border-radius:22px;padding:14px 18px 14px 14px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 14px;min-width:0;border:2px solid transparent}
 .kid.k1{background:var(--kid1-soft);border-color:color-mix(in srgb,var(--kid1) 25%,transparent)}
 .kid.k2{background:var(--kid2-soft);border-color:color-mix(in srgb,var(--kid2) 25%,transparent)}
 .kid .av{width:clamp(72px,11vw,96px);height:auto;aspect-ratio:1;flex:none;object-fit:cover;object-position:50% 20%;border-radius:50%;background:var(--surface);border:3px solid var(--surface)}
@@ -71,6 +75,77 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--today);outline-
 .kid .stars svg{width:22px;height:22px}
 .bar{height:10px;border-radius:999px;background:var(--surface);overflow:hidden}
 .bar i{display:block;height:100%;border-radius:999px;transition:width .4s ease}
+
+/* Mini routine progress inside kid cards */
+.kmini{flex-basis:100%;display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:14px;padding:8px 12px;min-width:0}
+.kmini svg{flex:none}
+.kmini .kmt{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.kmini .kmr{display:flex;justify-content:space-between;gap:8px;font-weight:800;font-size:13.5px}
+.kmini .kmr span:last-child{font-variant-numeric:tabular-nums}
+.kmini .bar{height:8px;background:var(--surface-2)}
+
+/* My Daily Routine */
+.routine{background:var(--surface);border-radius:24px;box-shadow:var(--shadow);padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.rt-head{border:0;background:transparent;display:flex;align-items:center;gap:12px;text-align:left;padding:2px;width:100%}
+.rt-head h2{font-size:clamp(22px,3vw,27px);font-weight:700}
+.rt-head p{margin:0;color:var(--muted);font-weight:600;font-size:14px}
+.rt-head .chev{margin-left:auto;transition:transform .2s}
+.rt-head[aria-expanded="false"] .chev{transform:rotate(180deg)}
+.rt-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.rt-tab{border:2px solid transparent;border-radius:14px;padding:9px 6px;font-weight:800;font-size:14.5px;display:flex;align-items:center;justify-content:center;gap:8px;min-width:0}
+.rt-tab[data-p="morning"]{background:var(--rt-morning)}
+.rt-tab[data-p="afterSchool"]{background:var(--rt-after)}
+.rt-tab[data-p="bedtime"]{background:var(--rt-bed)}
+.rt-tab[aria-selected="true"]{border-color:var(--ink)}
+.rt-tab[aria-selected="false"]{opacity:.75}
+@media (max-width:520px){.rt-tab{flex-direction:column;gap:2px;font-size:12.5px}}
+.rk{border-radius:18px;border:2px solid transparent;overflow:hidden}
+.rk.k1{background:var(--kid1-soft);border-color:color-mix(in srgb,var(--kid1) 22%,transparent)}
+.rk.k2{background:var(--kid2-soft);border-color:color-mix(in srgb,var(--kid2) 22%,transparent)}
+.rk + .rk{margin-top:10px}
+.rk-head{display:flex;align-items:center;gap:12px;padding:10px 12px;flex-wrap:wrap}
+.rk-toggle{border:0;background:transparent;display:flex;align-items:center;gap:12px;flex:1 1 260px;min-width:0;text-align:left;padding:0}
+.rk-toggle img{width:46px;height:46px;border-radius:50%;object-fit:cover;object-position:50% 20%;background:var(--surface);border:2px solid var(--surface);flex:none}
+.rk-title{display:flex;flex-direction:column;min-width:0;flex:1}
+.rk-title b{font-family:var(--f-display);font-weight:600;font-size:20px;line-height:1.15}
+.rk.k1 .rk-title b{color:var(--kid1)} .rk.k2 .rk-title b{color:var(--kid2)}
+.rk-title span{color:var(--muted);font-weight:600;font-size:13.5px}
+.rk-prog{display:flex;align-items:center;gap:10px;flex:0 1 220px;min-width:140px}
+.rk-prog .bar{flex:1;height:9px}
+.rk-prog b{font-variant-numeric:tabular-nums;font-weight:900;min-width:3ch;text-align:right}
+.rk-toggle .chev{flex:none;transition:transform .2s}
+.rk-toggle[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.rk-reset{border:2px solid currentColor;background:var(--surface);border-radius:999px;padding:5px 12px;font-weight:800;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.rk.k1 .rk-reset{color:var(--kid1)} .rk.k2 .rk-reset{color:var(--kid2)}
+.rk-body{padding:0 12px 12px}
+.rk-items{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+@media (max-width:900px){.rk-items{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:520px){.rk-items{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.rk-item{position:relative;border:2px solid var(--line);background:var(--surface);border-radius:16px;padding:14px 6px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:800;font-size:13.5px;line-height:1.2;text-align:center;min-height:116px;min-width:0}
+.rk-item svg.ic{width:48px;height:48px}
+.rk-item .ck{position:absolute;top:7px;right:7px;width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;background:var(--surface)}
+.rk-item .ck svg{opacity:0}
+.rk.k1 .rk-item[aria-pressed="true"]{border-color:var(--kid1)}
+.rk.k2 .rk-item[aria-pressed="true"]{border-color:var(--kid2)}
+.rk.k1 .rk-item[aria-pressed="true"] .ck{background:var(--kid1);border-color:var(--kid1)}
+.rk.k2 .rk-item[aria-pressed="true"] .ck{background:var(--kid2);border-color:var(--kid2)}
+.rk-item[aria-pressed="true"] .ck svg{opacity:1}
+.rk-item .rm{position:absolute;top:6px;left:6px;width:22px;height:22px;border-radius:50%;border:0;background:var(--surface-2);color:var(--muted);font-weight:900;font-size:14px;line-height:1;display:grid;place-items:center;padding:0}
+.rk-item.add{border-style:dashed;color:var(--muted);background:transparent;justify-content:center}
+.rk-item.add .plus{width:40px;height:40px;border-radius:50%;border:2px dashed currentColor;display:grid;place-items:center;font-size:26px;font-weight:700;line-height:1}
+.rk-new{grid-column:span 2;border:2px solid var(--line);background:var(--surface);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px;justify-content:center;min-width:0}
+.rk-new input{font:inherit;font-weight:700;border:2px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0;background:var(--surface);color:var(--ink)}
+.rk-new div{display:flex;gap:6px;flex-wrap:wrap}
+.rk-new button{border:0;border-radius:999px;padding:6px 14px;font-weight:800;font-size:13px}
+.rk.k1 .rk-new .ok{background:var(--kid1);color:#fff} .rk.k2 .rk-new .ok{background:var(--kid2);color:#fff}
+.rk-new .no{background:var(--surface-2)}
+@media (max-width:520px){.rk-new{grid-column:1/-1}}
+.rk-done{margin-top:10px;border-radius:14px;padding:10px 14px;background:var(--rt-morning);display:flex;align-items:center;gap:10px}
+.rk-done b{font-family:var(--f-display);font-weight:600;font-size:19px;display:block}
+.rk-done span{font-weight:700;color:var(--muted)}
+.rt-soon{border-radius:18px;padding:22px 16px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.rt-soon b{font-family:var(--f-display);font-weight:600;font-size:20px}
+.rt-soon span{color:var(--muted);font-weight:600;max-width:46ch}
 
 /* Week strip */
 .week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;padding-top:10px}
@@ -275,6 +350,17 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--today);outline-
   </header>
 
   <div class="kids" id="kids"></div>
+  <section class="routine" id="routine">
+    <button class="rt-head" type="button" id="rtToggle" aria-expanded="true" aria-controls="rtBody">
+      <svg width="46" height="50" viewBox="0 0 46 50" aria-hidden="true"><rect x="5" y="7" width="36" height="40" rx="7" fill="var(--rt-after)" stroke="var(--kid2)" stroke-width="3"/><rect x="14" y="3" width="18" height="9" rx="3" fill="var(--surface)" stroke="var(--kid2)" stroke-width="3"/><g stroke="var(--kid2)" stroke-width="3" stroke-linecap="round"><path d="M13 21h2M13 29h2M13 37h2M20 21h13M20 29h13M20 37h9"/></g></svg>
+      <div><h2 id="t-rtTitle"></h2><p id="t-rtSub"></p></div>
+      <svg class="chev" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 12.5L10 7.5l5 5" stroke="var(--ink)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div id="rtBody" style="display:flex;flex-direction:column;gap:12px">
+      <div class="rt-tabs" role="tablist" id="rtTabs"></div>
+      <div id="rtPanel"></div>
+    </div>
+  </section>
   <nav class="week" id="week" role="tablist"></nav>
 
   <section style="display:flex;flex-direction:column;gap:14px">
@@ -624,6 +710,7 @@ const UX={
   toolN:{turtle:"Turtle Shell",lemon:"Lemon Squeeze",senses:"5-4-3-2-1 Senses",corner:"Calm Corner"},
   toolD:{turtle:"Hug your knees, tuck your head and take 3 slow breaths. Come out when you feel ready.",lemon:"Pretend to squeeze a lemon in each hand for 5 seconds. Then release and relax.",senses:"Find 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell and 1 you can taste.",corner:"A cozy spot with a pillow, a soft toy and the breathing bubble. It is a place to reset, not a punishment."},
   syncOn:"Shared: everyone sees the same marks",syncLocal:"Saved on this device only",syncRo:"View only",roMsg:"This view is read-only. Ask Diana for Contributor access to check games off.",
+  rt:{title:"My Daily Routine",sub:"Little steps, big wins!",tabs:{morning:"Morning",afterSchool:"After School",bedtime:"Bedtime"},mini:"Morning checklist",check:n=>n+"'s Morning Checklist",checkSub:"Let's get ready for school!",reset:"Reset",doneT:"Ready for School!",doneS:"You did it!",per:{afterSchool:{check:n=>n+"'s After School Checklist",sub:"Rest, learn, then play!",doneT:"All done for today!",doneS:"Time to play!",toast:n=>n+" finished the after-school list!"},bedtime:{check:n=>n+"'s Bedtime Checklist",sub:"Wind down for a good night!",doneT:"Ready for bed!",doneS:"Sweet dreams!",toast:n=>n+" is ready for bed!"}},addOther:"Add other",otherPh:"School project, practice…",add:"Add",cancel:"Cancel",remove:"Remove",soonT:"Coming soon",soonS:"Tell me which steps you want here and I'll add them.",items:{brush:"Brush my teeth",backpack:"Backpack",homework:"Homework",lunch:"Lunchbox",water:"Water bottle",jacket:"Jacket",snack:"Snack / Eat something",rest:"Short break (10–15 min)",read:"Read 15 min",brain:"Brain Game",chore:"Chore of the day",prep:"Prep for tomorrow",dinner:"Dinner / Help with dinner",bath:"Shower / Bath",laundry:"Dirty clothes in the hamper",pajamas:"Pajamas on",story:"Bedtime story"},toast:n=>n+" is ready for school!"},
   extraTip:"Name it to tame it: say what you see, calmly (\"You're really frustrated the tower fell\"), then wait."},
  es:{tag:["Despierta","Enfócate","Relájate"],games:"juegos",missions:"Las 3 misiones de hoy",missionsSub:"Primero moverse, luego enfocarse y al final calmarse. Unos 15 minutos en total.",
   short:{move:"Muévete",focus:"Enfoque",calm:"Calma"},go:"Empezar",how:"Cómo jugar",mwd:"La palabra mágica de hoy",insteadOf:"En vez de…",
@@ -634,6 +721,7 @@ const UX={
   toolN:{turtle:"Caparazón de tortuga",lemon:"Exprime el limón",senses:"5-4-3-2-1 sentidos",corner:"Rincón de calma"},
   toolD:{turtle:"Abraza tus rodillas, baja la cabeza y respira lento 3 veces. Sal cuando te sientas listo.",lemon:"Imagina un limón en cada mano. Aprieta durante 5 segundos y después relaja tus manos.",senses:"Busca 5 cosas que ves, 4 que tocas, 3 que escuchas, 2 que hueles y 1 que saboreas.",corner:"Un espacio cómodo con una almohada, un peluche y la burbuja de respiración. Es un lugar para tranquilizarse, no un castigo."},
   syncOn:"Compartido: todos ven las mismas marcas",syncLocal:"Guardado solo en este dispositivo",syncRo:"Solo lectura",roMsg:"Esta vista es de solo lectura. Pídele a Diana acceso de Colaborador para marcar juegos.",
+  rt:{title:"Mi rutina diaria",sub:"¡Pasitos pequeños, grandes logros!",tabs:{morning:"Mañana",afterSchool:"Después de la escuela",bedtime:"Noche"},mini:"Rutina de la mañana",check:n=>"Rutina de la mañana de "+n,checkSub:"¡A prepararnos para la escuela!",reset:"Reiniciar",doneT:"¡Listo para la escuela!",doneS:"¡Lo lograste!",per:{afterSchool:{check:n=>"Después de la escuela: "+n,sub:"¡Descansa, aprende y luego a jugar!",doneT:"¡Todo listo por hoy!",doneS:"¡A jugar!",toast:n=>"¡"+n+" terminó su lista de la tarde!"},bedtime:{check:n=>"Rutina de la noche de "+n,sub:"¡A relajarnos para dormir bien!",doneT:"¡Listo para dormir!",doneS:"¡Dulces sueños!",toast:n=>"¡"+n+" está listo para dormir!"}},addOther:"Agregar otra",otherPh:"Proyecto escolar, práctica…",add:"Agregar",cancel:"Cancelar",remove:"Quitar",soonT:"Próximamente",soonS:"Dime qué pasos quieres aquí y los agrego.",items:{brush:"Cepillarme los dientes",backpack:"Mochila",homework:"Tarea",lunch:"Lonchera",water:"Botella de agua",jacket:"Chamarra",snack:"Snack / Comer algo",rest:"Descanso (10–15 min)",read:"Leer 15 min",brain:"Juego mental",chore:"Tarea de la casa del día",prep:"Preparar lo de mañana",dinner:"Cenar / Ayudar con la cena",bath:"Baño / Regadera",laundry:"Ropa sucia al cesto",pajamas:"Ponerme la pijama",story:"Cuento para dormir"},toast:n=>"¡"+n+" está listo para la escuela!"},
   extraTip:"Nómbralo para calmarlo: di lo que ves con calma (\"Estás muy frustrado porque se cayó la torre\") y luego espera."}
 };
 const MODE={tray:"own",blocks:"own",sort:"own",maze:"own",rhythm:"turns",ispy:"turns",mirror:"turns"};
@@ -686,11 +774,12 @@ let st={lang:"en",names:["",""],week:wk,done:{}};
 try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s){st=Object.assign(st,s);if(st.week!==wk){st.week=wk;st.done={}}}}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
 /* ===== GOOGLE SHEETS SYNC — paste your Apps Script Web App URL between the quotes ===== */
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbxa1c8r0JrnSfJnVT_KQK7i5Y-vyvXY6jPr7ImfaJfnM9m_ksln2-dxbcO_TihwDujm/exec";
+const SHEET_URL = "";
 /* ========================================================================================= */
+let lastLocal=0, sheetReady=false;
 let DB=null, SHEET=false, readOnly=false, wq=Promise.resolve(), pending=0;
 const queue=f=>{wq=wq.then(f).catch(e=>{if(e&&e.code==="invalid_argument"){readOnly=true;renderSync();toast(X().roMsg)}else if(e&&e.code==="quota_exceeded"){toast(e.message||"Storage full")}});return wq};
-function renderSync(){const el=$("sync");if(!el)return;const x=X();const live=(DB||SHEET)&&!readOnly;el.classList.toggle("on",live);el.lastElementChild.textContent=!(DB||SHEET)?x.syncLocal:readOnly?x.syncRo:x.syncOn}
+function renderSync(){const el=$("sync");if(!el)return;const x=X();const live=(DB||SHEET)&&!readOnly;el.classList.toggle("on",live&&(!SHEET||sheetReady));el.lastElementChild.textContent=!(DB||SHEET)?x.syncLocal:readOnly?x.syncRo:(SHEET&&!sheetReady)?(st.lang==="es"?"Conectando con Google… (puede tardar unos segundos)":"Connecting to Google… (can take a few seconds)"):x.syncOn}
 function setMark(key,on){
  if(DB&&readOnly){toast(X().roMsg);return false}
  if(on)st.done[key]=1;else delete st.done[key];
@@ -701,10 +790,10 @@ function setMark(key,on){
 }
 let nameT=null;
 function pushNames(){if(SHEET){save();clearTimeout(nameT);nameT=setTimeout(()=>sheetPost({action:"names",names:st.names}),700);return}if(!DB||readOnly){save();return}clearTimeout(nameT);nameT=setTimeout(()=>queue(()=>DB.doc("settings/names").set({names:st.names})),700)}
-function sheetPost(body){pending++;return fetch(SHEET_URL,{method:"POST",body:JSON.stringify(body)}).then(r=>r.json()).catch(()=>toast(st.lang==="es"?"No se pudo guardar en Google Sheets":"Could not save to Google Sheets")).finally(()=>{pending--})}
+function sheetPost(body){pending++;lastLocal=Date.now();return fetch(SHEET_URL,{method:"POST",body:JSON.stringify(body)}).then(r=>r.json()).catch(()=>toast(st.lang==="es"?"No se pudo guardar en Google Sheets":"Could not save to Google Sheets")).finally(()=>{pending--})}
 async function sheetPull(){
- if(pending>0)return;
- try{const r=await fetch(SHEET_URL+"?week="+encodeURIComponent(wk));const j=await r.json();if(!j||!j.ok||pending>0)return;
+ if(pending>0)return;const t0=Date.now();
+ try{const r=await fetch(SHEET_URL+"?week="+encodeURIComponent(wk));const j=await r.json();if(!j||!j.ok)return;if(!sheetReady){sheetReady=true;renderSync()}if(pending>0||lastLocal>t0)return;
   const m={};(j.keys||[]).forEach(k=>{if(/^\d-\d-\d$/.test(k))m[k]=1});
   const nn=Array.isArray(j.names)?[String(j.names[0]||"").slice(0,14),String(j.names[1]||"").slice(0,14)]:st.names;
   const changed=JSON.stringify(m)!==JSON.stringify(st.done)||nn[0]!==st.names[0]||nn[1]!==st.names[1];
@@ -759,8 +848,76 @@ function renderKids(){
    <input id="name${k+1}" value="${esc(nm(k))}" maxlength="14" aria-label="Name">
    <div class="cnt"><b>${t.n}</b> / 21 ${x.games}</div>
    <div class="stars" aria-label="${t.full} / 7">${Array.from({length:7},(_,i)=>starI(i<t.full?"var(--sun)":"var(--star-empty)")).join("")}</div>
-   <div class="bar"><i style="width:${t.n/21*100}%;background:var(--kid${k+1})"></i></div></div></div>`}).join("");
- [0,1].forEach(k=>$("name"+(k+1)).addEventListener("input",e=>{st.names[k]=e.target.value.trim();pushNames();renderMissions();renderProg();renderMagic();renderKidCountsOnly()}));
+   <div class="bar"><i style="width:${t.n/21*100}%;background:var(--kid${k+1})"></i></div></div><div class="kmini" id="kmini${k}"></div></div>`}).join("");
+ renderMini();
+ [0,1].forEach(k=>$("name"+(k+1)).addEventListener("input",e=>{st.names[k]=e.target.value.trim();pushNames();renderMissions();renderProg();renderMagic();renderRoutine();renderKidCountsOnly()}));
+}
+/* ---------- Daily Routine (separate from Brain Games progress) ---------- */
+const RKEY="brain-games-routines-v1";
+const RKIDS=["caty","isaac"];
+const RPERIODS=["morning","afterSchool","bedtime"];
+const RITEMS={morning:["brush","backpack","homework","lunch","water","jacket"],afterSchool:["snack","rest","homework","read","brain","chore","prep"],bedtime:["dinner","bath","brush","laundry","pajamas","story"]};
+const CKEY="brain-games-routine-custom-v1";
+let rCustom=(()=>{const o={};RKIDS.forEach(k=>{o[k]={morning:[],afterSchool:[],bedtime:[]}});return o})();
+try{const c=JSON.parse(localStorage.getItem(CKEY)||"null");if(c)RKIDS.forEach(k=>RPERIODS.forEach(p=>{const v=c[k]&&c[k][p];if(Array.isArray(v))rCustom[k][p]=v.filter(x=>x&&x.id&&typeof x.text==="string").slice(0,6)}))}catch(e){}
+const saveCustom=()=>{try{localStorage.setItem(CKEY,JSON.stringify(rCustom))}catch(e){}};
+let rAdding=null;
+const todayStr=(()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")})();
+const emptyRoutine=()=>{const o={};RKIDS.forEach(k=>{o[k]={morning:{},afterSchool:{},bedtime:{}}});return o};
+let routineProgress=emptyRoutine(), rtUI={open:true,tab:"morning",kid:0};
+try{const r=JSON.parse(localStorage.getItem(RKEY)||"null");if(r){if(r.date===todayStr&&r.data)RKIDS.forEach(k=>RPERIODS.forEach(p=>{const v=r.data[k]&&r.data[k][p];if(v&&typeof v==="object")routineProgress[k][p]=v}));if(r.ui)rtUI=Object.assign(rtUI,r.ui)}}catch(e){}
+const saveRoutines=()=>{try{localStorage.setItem(RKEY,JSON.stringify({date:todayStr,data:routineProgress,ui:rtUI}))}catch(e){}};
+const rItems=(k,p)=>RITEMS[p].concat(rCustom[RKIDS[k]][p].map(c=>c.id));
+const rCount=(k,p)=>rItems(k,p).filter(i=>routineProgress[RKIDS[k]][p][i]).length;
+const RCHECK='<svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.5 6.2 L5 8.5 L9.5 3.5" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const RSUN='<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="6" fill="var(--sun)" stroke="var(--ink)" stroke-width="1.6"/><path d="M13 2v3M13 21v3M2 13h3M21 13h3M5.2 5.2l2.1 2.1M18.7 18.7l2.1 2.1M5.2 20.8l2.1-2.1M18.7 7.3l2.1-2.1" stroke="var(--c-move)" stroke-width="2" stroke-linecap="round"/></svg>';
+const RTAB_ICON={morning:'<svg width="22" height="22" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="5.5" fill="var(--sun)"/><path d="M13 3v3M13 20v3M3 13h3M20 13h3M6 6l2 2M18 18l2 2M6 20l2-2M18 8l2-2" stroke="var(--c-move)" stroke-width="2" stroke-linecap="round"/></svg>',
+ afterSchool:'<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5L12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" fill="var(--kid2)"/></svg>',
+ bedtime:'<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 17.5A7.5 7.5 0 0 1 9.4 4a8.5 8.5 0 1 0 10.5 11.6 7.5 7.5 0 0 1-3.9 1.9z" fill="var(--c-calm)"/></svg>'};
+const RICON={
+ brush:'<svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="30" width="30" height="7" rx="3.5" transform="rotate(-40 23 33)" fill="#5AA9F5" stroke="var(--ink)" stroke-width="2"/><rect x="29" y="9" width="11" height="9" rx="2" transform="rotate(-40 34 13)" fill="#fff" stroke="var(--ink)" stroke-width="2"/><path d="M31 8l1-3M35 9l2-3M38 12l3-1" stroke="#7ED3F7" stroke-width="2" stroke-linecap="round"/></svg>',
+ backpack:'<svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M17 12a7 7 0 0 1 14 0" fill="none" stroke="var(--ink)" stroke-width="2.4"/><rect x="10" y="12" width="28" height="30" rx="9" fill="#F06292" stroke="var(--ink)" stroke-width="2"/><rect x="15" y="27" width="18" height="11" rx="4" fill="#F8BBD0" stroke="var(--ink)" stroke-width="2"/><path d="M15 31h18" stroke="var(--ink)" stroke-width="1.6"/></svg>',
+ homework:'<svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="31" width="34" height="8" rx="2" fill="#4CAF50" stroke="var(--ink)" stroke-width="2"/><rect x="9" y="23" width="30" height="8" rx="2" fill="#42A5F5" stroke="var(--ink)" stroke-width="2"/><rect x="8" y="15" width="31" height="8" rx="2" fill="#FFB300" stroke="var(--ink)" stroke-width="2"/><path d="M33 15v8M35 23v8M35 31v8" stroke="#fff" stroke-width="2"/></svg>',
+ lunch:'<svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M18 14v-3a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3" fill="none" stroke="var(--ink)" stroke-width="2.4"/><rect x="7" y="14" width="34" height="26" rx="7" fill="#F48FB1" stroke="var(--ink)" stroke-width="2"/><path d="M7 24h34" stroke="var(--ink)" stroke-width="2"/><rect x="20" y="21" width="8" height="6" rx="2" fill="#FFF59D" stroke="var(--ink)" stroke-width="1.6"/></svg>',
+ water:'<svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><rect x="19" y="5" width="10" height="6" rx="2" fill="#B39DDB" stroke="var(--ink)" stroke-width="2"/><path d="M17 15a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v24a5 5 0 0 1-5 5h-4a5 5 0 0 1-5-5z" fill="#E1F5FE" stroke="var(--ink)" stroke-width="2"/><path d="M18 27h12v12a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4z" fill="#81D4FA"/><path d="M17 27h14" stroke="var(--ink)" stroke-width="1.6"/></svg>',
+ snack:'<svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 15c-4-4-15-3-15 9 0 10 7 18 11 18 2 0 3-1 4-1s2 1 4 1c4 0 11-8 11-18 0-12-11-13-15-9z" fill="#EF5350" stroke="var(--ink)" stroke-width="2"/><path d="M24 15c0-4 1-7 4-9" stroke="#6D4C41" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M26 10c4-3 9-2 10 1-4 2-8 1-10-1z" fill="#66BB6A" stroke="var(--ink)" stroke-width="1.6"/></svg>',
+ rest:'<svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="25" r="16" fill="#E1F5FE" stroke="var(--ink)" stroke-width="2"/><path d="M24 15v10l6 4" stroke="var(--ink)" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M33 6h6l-6 6h6" stroke="#7E57C2" stroke-width="2" fill="none" stroke-linejoin="round"/></svg>',
+ read:'<svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 14c-5-4-12-4-17-2v24c5-2 12-2 17 2 5-4 12-4 17-2V12c-5-2-12-2-17 2z" fill="#FFF8E1" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M24 14v24" stroke="var(--ink)" stroke-width="2"/><path d="M11 19c3-1 6-1 9 0M11 25c3-1 6-1 9 0M28 19c3-1 6-1 9 0M28 25c3-1 6-1 9 0" stroke="#90A4AE" stroke-width="1.8" stroke-linecap="round"/></svg>',
+ brain:'<svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 10c-3-3-9-3-11 1-5 0-8 4-6 8-4 2-4 8-1 10-2 4 1 9 6 9 1 4 7 5 10 2 1 1 2 1 2 1s1 0 2-1c3 3 9 2 10-2 5 0 8-5 6-9 3-2 3-8-1-10 2-4-1-8-6-8-2-4-8-4-11-1z" fill="#F7A6C4" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M24 11v30M16 18c3 1 4 4 3 7M32 18c-3 1-4 4-3 7" stroke="var(--ink)" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>',
+ chore:'<svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M30 5l-8 22" stroke="#8D6E63" stroke-width="3.4" stroke-linecap="round"/><path d="M15 25l14 5-4 13c-5 0-11-2-15-6z" fill="#FFCA28" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M14 33l9 3M12 37l9 3" stroke="#E0A800" stroke-width="1.8"/><path d="M36 30l1.5 3.5L41 35l-3.5 1.5L36 40l-1.5-3.5L31 35l3.5-1.5z" fill="#4FC3F7"/></svg>',
+ prep:'<svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M17 12a7 7 0 0 1 14 0" fill="none" stroke="var(--ink)" stroke-width="2.4"/><rect x="10" y="12" width="28" height="30" rx="9" fill="#5C9DF2" stroke="var(--ink)" stroke-width="2"/><rect x="15" y="27" width="18" height="11" rx="4" fill="#BBDEFB" stroke="var(--ink)" stroke-width="2"/><path d="M20 32l3 3 6-6" stroke="#2E7D32" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ dinner:'<svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="26" r="15" fill="#fff" stroke="var(--ink)" stroke-width="2"/><circle cx="24" cy="26" r="9" fill="#FFE0B2" stroke="var(--ink)" stroke-width="1.6"/><path d="M5 10v10M3 10v5a2 2 0 0 0 4 0v-5M5 20v20" stroke="var(--ink)" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M43 10c-3 2-3 8 0 10v20" stroke="var(--ink)" stroke-width="2" stroke-linecap="round" fill="none"/></svg>',
+ bath:'<svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 24h36v5a10 10 0 0 1-10 10H16A10 10 0 0 1 6 29z" fill="#B3E5FC" stroke="var(--ink)" stroke-width="2"/><path d="M11 24V11a4 4 0 0 1 8 0" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round"/><circle cx="22" cy="18" r="3" fill="#fff" stroke="#81D4FA" stroke-width="1.6"/><circle cx="29" cy="14" r="2.4" fill="#fff" stroke="#81D4FA" stroke-width="1.6"/><circle cx="35" cy="19" r="3.4" fill="#fff" stroke="#81D4FA" stroke-width="1.6"/><path d="M14 39l-2 4M34 39l2 4" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round"/></svg>',
+ laundry:'<svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 16h28l-3 26H13z" fill="#A5D6A7" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M13 22h22M14 28h20M15 34h18" stroke="#66BB6A" stroke-width="1.8"/><path d="M16 16c1-6 5-9 9-8 3 1 2 5 6 4 2 0 3 2 3 4" fill="#FFAB91" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/></svg>',
+ pajamas:'<svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M17 8l7 4 7-4 10 6-4 9-4-2v21H15V21l-4 2-4-9z" fill="#B39DDB" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M27 26a5 5 0 1 1-5-6 4 4 0 0 0 5 6z" fill="#FFF59D"/><circle cx="20" cy="33" r="1.3" fill="#fff"/><circle cx="29" cy="35" r="1.3" fill="#fff"/></svg>',
+ story:'<svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 16c-5-4-12-4-17-2v24c5-2 12-2 17 2 5-4 12-4 17-2V14c-5-2-12-2-17 2z" fill="#D1C4E9" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M24 16v24" stroke="var(--ink)" stroke-width="2"/><path d="M36 4a5 5 0 1 0 5 7 4 4 0 0 1-5-7z" fill="#FFD54F"/><path d="M14 6l1 2.4 2.4 1-2.4 1L14 13l-1-2.6-2.4-1 2.4-1z" fill="#FFD54F"/></svg>',
+ custom:'<svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6l5.3 11 12 1.6-8.8 8.4 2.2 12L24 33.3 13.3 39l2.2-12-8.8-8.4 12-1.6z" fill="#FFE082" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/></svg>',
+ jacket:'<svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M18 8l6 5 6-5 9 5 4 18-6 2-2-9v19H13V24l-2 9-6-2 4-18z" fill="#EF5350" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M24 13v29" stroke="var(--ink)" stroke-width="2"/><circle cx="21" cy="22" r="1.4" fill="var(--ink)"/><circle cx="21" cy="30" r="1.4" fill="var(--ink)"/></svg>'};
+const RCHEV='<svg class="chev" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 7.5l5 5 5-5" stroke="var(--ink)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const RRESET='<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 2.5v3h-3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function renderMini(){
+ const t=X().rt;
+ [0,1].forEach(k=>{const el=document.getElementById("kmini"+k);if(!el)return;const n=rCount(k,"morning"),N=RITEMS.morning.length;
+  el.innerHTML=`${RSUN}<div class="kmt"><div class="kmr"><span>${esc(t.mini)}</span><span>${n} / ${N}</span></div><div class="bar"><i style="width:${n/N*100}%;background:var(--kid${k+1})"></i></div></div>`});
+}
+function renderRoutine(){
+ const t=X().rt,p=rtUI.tab;
+ $("t-rtTitle").textContent=t.title;$("t-rtSub").textContent=t.sub;
+ $("rtToggle").setAttribute("aria-expanded",rtUI.open);$("rtBody").hidden=!rtUI.open;
+ $("rtTabs").innerHTML=RPERIODS.map(q=>`<button class="rt-tab" type="button" role="tab" data-p="${q}" aria-selected="${q===p}">${RTAB_ICON[q]}<span>${esc(t.tabs[q])}</span></button>`).join("");
+ if(false){$("rtPanel").innerHTML=`<div class="rt-soon" style="background:var(${p==="bedtime"?"--rt-bed":"--rt-after"})">${RTAB_ICON[p]}<b>${esc(t.soonT)}</b><span>${esc(t.soonS)}</span></div>`;return}
+ const P=p==="morning"?{check:t.check,sub:t.checkSub,doneT:t.doneT,doneS:t.doneS}:t.per[p];
+ $("rtPanel").innerHTML=[0,1].map(k=>{const all=rItems(k,p),N=all.length,n=rCount(k,p),open=rtUI.kid===k,items=routineProgress[RKIDS[k]][p],cus=rCustom[RKIDS[k]][p],adding=rAdding&&rAdding.k===k&&rAdding.p===p;
+  return `<div class="rk k${k+1}">
+   <div class="rk-head">
+    <button class="rk-toggle" type="button" data-rk="${k}" aria-expanded="${open}"><img src="${AVI[k]}" alt=""><span class="rk-title"><b>${esc(P.check(nm(k)))}</b><span>${esc(P.sub)}</span></span>${open?"":RCHEV}</button>
+    <div class="rk-prog"><div class="bar"><i style="width:${n/N*100}%;background:var(--kid${k+1})"></i></div><b>${n} / ${N}</b></div>
+    ${open?`<button class="rk-reset" type="button" data-rreset="${k}">${RRESET}${esc(t.reset)}</button>`:""}
+    ${open?`<button class="rk-toggle" type="button" data-rk="${k}" aria-expanded="true" aria-label="Collapse" style="flex:0 0 auto">${RCHEV}</button>`:""}
+   </div>
+   ${open?`<div class="rk-body"><div class="rk-items">${RITEMS[p].map(i=>`<button class="rk-item" type="button" data-ritem="${i}" data-k="${k}" aria-pressed="${!!items[i]}"><span class="ck">${RCHECK}</span>${RICON[i]}<span>${esc(t.items[i])}</span></button>`).join("")}${cus.map(c=>`<div class="rk-item" role="button" tabindex="0" data-ritem="${c.id}" data-k="${k}" aria-pressed="${!!items[c.id]}"><button class="rm" type="button" data-rdel="${c.id}" data-k="${k}" aria-label="${esc(t.remove)}">×</button><span class="ck">${RCHECK}</span>${RICON.custom}<span>${esc(c.text)}</span></div>`).join("")}${adding?`<div class="rk-new"><input id="rkNewInput" maxlength="40" placeholder="${esc(t.otherPh)}" aria-label="${esc(t.addOther)}"><div><button class="ok" type="button" data-radd="${k}">${esc(t.add)}</button><button class="no" type="button" data-rcancel="1">${esc(t.cancel)}</button></div></div>`:(cus.length<6?`<button class="rk-item add" type="button" data-rnew="${k}"><span class="plus">+</span><span>${esc(t.addOther)}</span></button>`:"")}</div>
+    ${N&&n===N?`<div class="rk-done">${p==="bedtime"?RTAB_ICON.bedtime:RSUN}<div><b>${esc(P.doneT)}</b><span>${esc(P.doneS)}</span></div></div>`:""}</div>`:""}
+  </div>`}).join("");
 }
 function renderKidCountsOnly(){/* names typed: keep focus, nothing else to redraw in header */}
 function renderWeek(){
@@ -851,9 +1008,31 @@ function renderStatic(){
  $("tGo").textContent=running?u.pause:u.start;$("tReset").textContent=u.reset;$("tClose").textContent=u.close;
 }
 function refreshProgress(){renderWeek();renderMissions();renderProg();renderKids()}
-function renderAll(){renderSync();renderStatic();renderKids();renderWeek();renderMissions();renderMwd();renderProg();renderMagic();renderCalm()}
+function renderAll(){renderSync();renderStatic();renderKids();renderRoutine();renderWeek();renderMissions();renderMwd();renderProg();renderMagic();renderCalm()}
 
 /* ---------- Events ---------- */
+function addCustom(){const i=document.getElementById("rkNewInput");if(!i||!rAdding)return;const v=i.value.trim().slice(0,40);if(!v){i.focus();return}
+ const {k,p}=rAdding;rCustom[RKIDS[k]][p].push({id:"c"+Date.now().toString(36),text:v});rAdding=null;saveCustom();renderRoutine();renderMini()}
+$("rtPanel").addEventListener("keydown",e=>{if(e.target.id==="rkNewInput"){if(e.key==="Enter"){e.preventDefault();addCustom()}else if(e.key==="Escape"){rAdding=null;renderRoutine()}return}
+ if((e.key==="Enter"||e.key===" ")&&e.target.matches('div.rk-item[data-ritem]')){e.preventDefault();e.target.click()}});
+$("rtToggle").onclick=()=>{rtUI.open=!rtUI.open;saveRoutines();renderRoutine()};
+$("rtTabs").addEventListener("click",e=>{const b=e.target.closest(".rt-tab");if(!b)return;rtUI.tab=b.dataset.p;rAdding=null;saveRoutines();renderRoutine()});
+$("rtPanel").addEventListener("click",e=>{
+ const it=e.target.closest("[data-ritem]");
+ const del=e.target.closest("[data-rdel]");
+ if(del){const k=+del.dataset.k,p=rtUI.tab,id=del.dataset.rdel;rCustom[RKIDS[k]][p]=rCustom[RKIDS[k]][p].filter(c=>c.id!==id);delete routineProgress[RKIDS[k]][p][id];saveCustom();saveRoutines();renderRoutine();renderMini();return}
+ const nw=e.target.closest("[data-rnew]");
+ if(nw){rAdding={k:+nw.dataset.rnew,p:rtUI.tab};renderRoutine();const i=document.getElementById("rkNewInput");if(i)i.focus();return}
+ if(e.target.closest("[data-rcancel]")){rAdding=null;renderRoutine();return}
+ const ad=e.target.closest("[data-radd]");
+ if(ad){addCustom();return}
+ if(it){const k=+it.dataset.k,p=rtUI.tab,o=routineProgress[RKIDS[k]][p],id=it.dataset.ritem;if(o[id])delete o[id];else o[id]=true;saveRoutines();renderRoutine();renderMini();
+  if(o[id]&&rCount(k,p)===rItems(k,p).length)toast(p==="morning"?X().rt.toast(nm(k)):X().rt.per[p].toast(nm(k)));return}
+ const rs=e.target.closest("[data-rreset]");
+ if(rs){const k=+rs.dataset.rreset;routineProgress[RKIDS[k]][rtUI.tab]={};saveRoutines();renderRoutine();renderMini();return}
+ const tg=e.target.closest("[data-rk]");
+ if(tg){const k=+tg.dataset.rk;rtUI.kid=rtUI.kid===k?-1:k;saveRoutines();renderRoutine()}
+});
 $("lang-en").onclick=()=>{st.lang="en";save();renderAll()};
 $("lang-es").onclick=()=>{st.lang="es";save();renderAll()};
 $("week").addEventListener("click",e=>{const b=e.target.closest(".day");if(!b)return;sel=+b.dataset.i;renderWeek();renderMissions();renderMwd()});
@@ -910,4 +1089,5 @@ $("breathBtn").onclick=()=>{breathing=!breathing;clearInterval(bT);
 renderAll();
 initDb();
 </script>
+
 </body></html>
