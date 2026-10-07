@@ -789,22 +789,40 @@ function setMark(key,on){
 }
 let nameT=null;
 function pushNames(){if(SHEET){save();clearTimeout(nameT);nameT=setTimeout(()=>sheetPost({action:"names",names:st.names}),700);return}if(!DB||readOnly){save();return}clearTimeout(nameT);nameT=setTimeout(()=>queue(()=>DB.doc("settings/names").set({names:st.names})),700)}
-function sheetPost(body){pending++;lastLocal=Date.now();return fetch(SHEET_URL,{method:"POST",body:JSON.stringify(body)}).then(r=>r.json()).catch(()=>toast(st.lang==="es"?"No se pudo guardar en Google Sheets":"Could not save to Google Sheets")).finally(()=>{pending--})}
+/* Sync queue: changes are batched and sent one request at a time, so nothing is lost */
+let opQueue=[],inFlight=false,flushT=null;
+function sheetPost(op){opQueue.push(op);lastLocal=Date.now();pending=1;clearTimeout(flushT);flushT=setTimeout(flushOps,350)}
+async function flushOps(){
+ if(inFlight||!opQueue.length){if(!inFlight&&!opQueue.length)pending=0;return}
+ inFlight=true;const ops=opQueue.splice(0,opQueue.length);let ok=false,j=null;
+ for(let attempt=0;attempt<3&&!ok;attempt++){
+  try{const r=await fetch(SHEET_URL,{method:"POST",body:JSON.stringify({action:"ops",week:wk,day:todayStr,ops})});j=await r.json();ok=!!(j&&j.ok)}catch(e){}
+  if(!ok)await new Promise(res=>setTimeout(res,1500*(attempt+1)));
+ }
+ inFlight=false;
+ if(!ok){opQueue=ops.concat(opQueue);toast(st.lang==="es"?"No se pudo guardar. Reintentando…":"Couldn't save yet. Retrying…");setTimeout(flushOps,8000);return}
+ if(opQueue.length){flushOps();return}
+ pending=0;if(j&&j.keys)applyRemote(j);
+}
+function applyRemote(j){
+ if(pending>0||opQueue.length||inFlight)return;
+ if(!sheetReady){sheetReady=true;renderSync()}
+ const m={};(j.keys||[]).forEach(k=>{if(/^\d-\d-\d$/.test(k))m[k]=1});
+ const nn=Array.isArray(j.names)?[String(j.names[0]||"").slice(0,14),String(j.names[1]||"").slice(0,14)]:st.names;
+ const changed=JSON.stringify(m)!==JSON.stringify(st.done)||nn[0]!==st.names[0]||nn[1]!==st.names[1];
+ if(changed){st.done=m;if(nn[0]||nn[1])st.names=nn;save();const f=document.activeElement&&/^name[12]$/.test(document.activeElement.id);renderWeek();renderMissions();renderProg();if(!f)renderKids();renderMagic()}
+ if(Array.isArray(j.routine)&&j.custom&&typeof j.custom==="object"){
+  const rp=emptyRoutine();j.routine.forEach(x=>{if(Array.isArray(x)&&rp[x[0]]&&rp[x[0]][x[1]]&&x[2])rp[x[0]][x[1]][String(x[2])]=true});
+  const rc={};RKIDS.forEach(k=>{rc[k]={};RPERIODS.forEach(p=>{const v=j.custom[k]&&j.custom[k][p];rc[k][p]=Array.isArray(v)?v.filter(c=>c&&c.id&&typeof c.text==="string").map(c=>({id:String(c.id),text:String(c.text).slice(0,40)})).slice(0,6):[]})});
+  if(JSON.stringify(rp)!==JSON.stringify(routineProgress)||JSON.stringify(rc)!==JSON.stringify(rCustom)){routineProgress=rp;rCustom=rc;saveRoutines();saveCustom();renderMini();if(!rAdding)renderRoutine()}
+ }
+}
+let pulling=false;
 async function sheetPull(){
- if(pending>0)return;const t0=Date.now();
- try{const r=await fetch(SHEET_URL+"?week="+encodeURIComponent(wk)+"&day="+encodeURIComponent(todayStr));const j=await r.json();if(!j||!j.ok)return;if(!sheetReady){sheetReady=true;renderSync()}if(pending>0||lastLocal>t0)return;
-  const m={};(j.keys||[]).forEach(k=>{if(/^\d-\d-\d$/.test(k))m[k]=1});
-  const nn=Array.isArray(j.names)?[String(j.names[0]||"").slice(0,14),String(j.names[1]||"").slice(0,14)]:st.names;
-  const changed=JSON.stringify(m)!==JSON.stringify(st.done)||nn[0]!==st.names[0]||nn[1]!==st.names[1];
-  if(!SHEET){SHEET=true;renderSync()}
-  if(changed){st.done=m;if(nn[0]||nn[1])st.names=nn;save();const f=document.activeElement&&/^name[12]$/.test(document.activeElement.id);renderWeek();renderMissions();renderProg();if(!f)renderKids();renderMagic()}
-  if(Array.isArray(j.routine)&&j.custom&&typeof j.custom==="object"){
-   const rp=emptyRoutine();j.routine.forEach(x=>{if(Array.isArray(x)&&rp[x[0]]&&rp[x[0]][x[1]]&&x[2])rp[x[0]][x[1]][String(x[2])]=true});
-   const rc={};RKIDS.forEach(k=>{rc[k]={};RPERIODS.forEach(p=>{const v=j.custom[k]&&j.custom[k][p];rc[k][p]=Array.isArray(v)?v.filter(c=>c&&c.id&&typeof c.text==="string").map(c=>({id:String(c.id),text:String(c.text).slice(0,40)})).slice(0,6):[]})});
-   const rChanged=JSON.stringify(rp)!==JSON.stringify(routineProgress)||JSON.stringify(rc)!==JSON.stringify(rCustom);
-   if(rChanged){routineProgress=rp;rCustom=rc;saveRoutines();saveCustom();renderMini();if(!rAdding)renderRoutine()}
-  }
- }catch(e){}
+ if(pulling||pending>0||inFlight||opQueue.length)return;pulling=true;const t0=Date.now();
+ try{const r=await fetch(SHEET_URL+"?week="+encodeURIComponent(wk)+"&day="+encodeURIComponent(todayStr));const j=await r.json();
+  if(j&&j.ok&&lastLocal<=t0)applyRemote(j);else if(j&&j.ok&&!sheetReady){sheetReady=true;renderSync()}
+ }catch(e){}finally{pulling=false}
 }
 function initSheet(){SHEET=true;renderSync();sheetPull();setInterval(()=>{if(!document.hidden)sheetPull()},20000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)sheetPull()})}
 async function initDb(){
