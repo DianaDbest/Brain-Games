@@ -1,5 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Brain Games Week</title>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style></head><body><title>Brain Games Week</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap">
@@ -774,7 +773,7 @@ let st={lang:"en",names:["",""],week:wk,done:{}};
 try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s){st=Object.assign(st,s);if(st.week!==wk){st.week=wk;st.done={}}}}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
 /* ===== GOOGLE SHEETS SYNC — paste your Apps Script Web App URL between the quotes ===== */
-const SHEET_URL = "";
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbxa1c8r0JrnSfJnVT_KQK7i5Y-vyvXY6jPr7ImfaJfnM9m_ksln2-dxbcO_TihwDujm/exec";
 /* ========================================================================================= */
 let lastLocal=0, sheetReady=false;
 let DB=null, SHEET=false, readOnly=false, wq=Promise.resolve(), pending=0;
@@ -793,12 +792,18 @@ function pushNames(){if(SHEET){save();clearTimeout(nameT);nameT=setTimeout(()=>s
 function sheetPost(body){pending++;lastLocal=Date.now();return fetch(SHEET_URL,{method:"POST",body:JSON.stringify(body)}).then(r=>r.json()).catch(()=>toast(st.lang==="es"?"No se pudo guardar en Google Sheets":"Could not save to Google Sheets")).finally(()=>{pending--})}
 async function sheetPull(){
  if(pending>0)return;const t0=Date.now();
- try{const r=await fetch(SHEET_URL+"?week="+encodeURIComponent(wk));const j=await r.json();if(!j||!j.ok)return;if(!sheetReady){sheetReady=true;renderSync()}if(pending>0||lastLocal>t0)return;
+ try{const r=await fetch(SHEET_URL+"?week="+encodeURIComponent(wk)+"&day="+encodeURIComponent(todayStr));const j=await r.json();if(!j||!j.ok)return;if(!sheetReady){sheetReady=true;renderSync()}if(pending>0||lastLocal>t0)return;
   const m={};(j.keys||[]).forEach(k=>{if(/^\d-\d-\d$/.test(k))m[k]=1});
   const nn=Array.isArray(j.names)?[String(j.names[0]||"").slice(0,14),String(j.names[1]||"").slice(0,14)]:st.names;
   const changed=JSON.stringify(m)!==JSON.stringify(st.done)||nn[0]!==st.names[0]||nn[1]!==st.names[1];
   if(!SHEET){SHEET=true;renderSync()}
   if(changed){st.done=m;if(nn[0]||nn[1])st.names=nn;save();const f=document.activeElement&&/^name[12]$/.test(document.activeElement.id);renderWeek();renderMissions();renderProg();if(!f)renderKids();renderMagic()}
+  if(Array.isArray(j.routine)&&j.custom&&typeof j.custom==="object"){
+   const rp=emptyRoutine();j.routine.forEach(x=>{if(Array.isArray(x)&&rp[x[0]]&&rp[x[0]][x[1]]&&x[2])rp[x[0]][x[1]][String(x[2])]=true});
+   const rc={};RKIDS.forEach(k=>{rc[k]={};RPERIODS.forEach(p=>{const v=j.custom[k]&&j.custom[k][p];rc[k][p]=Array.isArray(v)?v.filter(c=>c&&c.id&&typeof c.text==="string").map(c=>({id:String(c.id),text:String(c.text).slice(0,40)})).slice(0,6):[]})});
+   const rChanged=JSON.stringify(rp)!==JSON.stringify(routineProgress)||JSON.stringify(rc)!==JSON.stringify(rCustom);
+   if(rChanged){routineProgress=rp;rCustom=rc;saveRoutines();saveCustom();renderMini();if(!rAdding)renderRoutine()}
+  }
  }catch(e){}
 }
 function initSheet(){SHEET=true;renderSync();sheetPull();setInterval(()=>{if(!document.hidden)sheetPull()},20000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)sheetPull()})}
@@ -1012,7 +1017,7 @@ function renderAll(){renderSync();renderStatic();renderKids();renderRoutine();re
 
 /* ---------- Events ---------- */
 function addCustom(){const i=document.getElementById("rkNewInput");if(!i||!rAdding)return;const v=i.value.trim().slice(0,40);if(!v){i.focus();return}
- const {k,p}=rAdding;rCustom[RKIDS[k]][p].push({id:"c"+Date.now().toString(36),text:v});rAdding=null;saveCustom();renderRoutine();renderMini()}
+ const {k,p}=rAdding;const nid="c"+Date.now().toString(36);rCustom[RKIDS[k]][p].push({id:nid,text:v});if(SHEET)sheetPost({action:"cadd",kid:RKIDS[k],period:p,id:nid,text:v});rAdding=null;saveCustom();renderRoutine();renderMini()}
 $("rtPanel").addEventListener("keydown",e=>{if(e.target.id==="rkNewInput"){if(e.key==="Enter"){e.preventDefault();addCustom()}else if(e.key==="Escape"){rAdding=null;renderRoutine()}return}
  if((e.key==="Enter"||e.key===" ")&&e.target.matches('div.rk-item[data-ritem]')){e.preventDefault();e.target.click()}});
 $("rtToggle").onclick=()=>{rtUI.open=!rtUI.open;saveRoutines();renderRoutine()};
@@ -1020,16 +1025,17 @@ $("rtTabs").addEventListener("click",e=>{const b=e.target.closest(".rt-tab");if(
 $("rtPanel").addEventListener("click",e=>{
  const it=e.target.closest("[data-ritem]");
  const del=e.target.closest("[data-rdel]");
- if(del){const k=+del.dataset.k,p=rtUI.tab,id=del.dataset.rdel;rCustom[RKIDS[k]][p]=rCustom[RKIDS[k]][p].filter(c=>c.id!==id);delete routineProgress[RKIDS[k]][p][id];saveCustom();saveRoutines();renderRoutine();renderMini();return}
+ if(del){const k=+del.dataset.k,p=rtUI.tab,id=del.dataset.rdel;rCustom[RKIDS[k]][p]=rCustom[RKIDS[k]][p].filter(c=>c.id!==id);if(SHEET){sheetPost({action:"cdel",kid:RKIDS[k],period:p,id});sheetPost({action:"rmark",date:todayStr,kid:RKIDS[k],period:p,item:id,on:false})}delete routineProgress[RKIDS[k]][p][id];saveCustom();saveRoutines();renderRoutine();renderMini();return}
  const nw=e.target.closest("[data-rnew]");
  if(nw){rAdding={k:+nw.dataset.rnew,p:rtUI.tab};renderRoutine();const i=document.getElementById("rkNewInput");if(i)i.focus();return}
  if(e.target.closest("[data-rcancel]")){rAdding=null;renderRoutine();return}
  const ad=e.target.closest("[data-radd]");
  if(ad){addCustom();return}
  if(it){const k=+it.dataset.k,p=rtUI.tab,o=routineProgress[RKIDS[k]][p],id=it.dataset.ritem;if(o[id])delete o[id];else o[id]=true;saveRoutines();renderRoutine();renderMini();
+  if(SHEET){const cu=rCustom[RKIDS[k]][p].find(c=>c.id===id);sheetPost({action:"rmark",date:todayStr,kid:RKIDS[k],period:p,item:id,on:!!o[id],label:cu?cu.text:(UX.en.rt.items[id]||id)})}
   if(o[id]&&rCount(k,p)===rItems(k,p).length)toast(p==="morning"?X().rt.toast(nm(k)):X().rt.per[p].toast(nm(k)));return}
  const rs=e.target.closest("[data-rreset]");
- if(rs){const k=+rs.dataset.rreset;routineProgress[RKIDS[k]][rtUI.tab]={};saveRoutines();renderRoutine();renderMini();return}
+ if(rs){const k=+rs.dataset.rreset;routineProgress[RKIDS[k]][rtUI.tab]={};if(SHEET)sheetPost({action:"rreset",date:todayStr,kid:RKIDS[k],period:rtUI.tab});saveRoutines();renderRoutine();renderMini();return}
  const tg=e.target.closest("[data-rk]");
  if(tg){const k=+tg.dataset.rk;rtUI.kid=rtUI.kid===k?-1:k;saveRoutines();renderRoutine()}
 });
@@ -1089,5 +1095,4 @@ $("breathBtn").onclick=()=>{breathing=!breathing;clearInterval(bT);
 renderAll();
 initDb();
 </script>
-
 </body></html>
